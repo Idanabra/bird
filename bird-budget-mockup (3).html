@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BIRD Budget</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif}
+body{background:#e8edf4;min-height:100vh;padding:24px}
+:root{
+  --blue:#0070f2;--blue-dk:#0040b0;--bg:#f5f6f8;
+  --border:#d9dde7;--text:#32363a;--muted:#6a6d70;
+  --navy:#1b4f8a;--yellow:#fffde7;--row:#f7f9fc
+}
+.shell{background:var(--bg);border:1px solid var(--border);border-radius:8px;overflow:hidden;max-width:1140px;margin:0 auto;box-shadow:0 4px 24px rgba(0,0,0,.12)}
+
+/* ── TOP BAR ── */
+.topbar{background:#fff;display:flex;align-items:center;gap:12px;padding:0 18px;height:58px;border-bottom:1px solid var(--border)}
+.topbar .logo-img{height:44px;width:auto}
+.topbar .app-name{font-size:17px;font-weight:700;color:var(--navy);letter-spacing:.2px;padding-left:12px;border-left:2px solid var(--border)}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:6px}
+/* user pill */
+.user-pill{display:flex;align-items:center;gap:8px;padding:5px 12px 5px 6px;border-radius:24px;border:1px solid var(--border);cursor:pointer;transition:background .15s}
+.user-pill:hover{background:#f0f6ff;border-color:var(--blue)}
+.user-avatar{width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0}
+.user-name{font-size:12px;color:var(--navy);font-weight:500}
+.user-role{font-size:10px;color:var(--muted)}
+/* bell */
+.bell-btn{width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);transition:all .15s;position:relative}
+.bell-btn:hover{border-color:var(--blue);color:var(--blue)}
+.bell-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:#e53935;border:1.5px solid #fff}
+
+/* ── TOGGLE NAV ── */
+.nav-wrap{background:#fff;border-bottom:1px solid var(--border);padding:10px 18px;display:flex;align-items:center;gap:12px}
+.tab-toggle{display:inline-flex;background:#f0f4fa;border:1px solid var(--border);border-radius:8px;padding:3px;gap:2px}
+.tab-toggle .ttab{padding:7px 20px;border-radius:6px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .2s;white-space:nowrap;user-select:none;display:flex;align-items:center;gap:6px}
+.tab-toggle .ttab i{font-size:15px}
+.tab-toggle .ttab:hover{color:var(--navy)}
+.tab-toggle .ttab.active{background:#fff;color:var(--navy);box-shadow:0 1px 4px rgba(0,0,0,.13);font-weight:600}
+.nav-right{margin-left:auto;display:flex;gap:8px}
+
+/* ── SCREENS ── */
+.screen{display:none}
+.screen.active{display:block}
+.page-header{background:#f5f7fb;border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between}
+.page-title{font-size:16px;font-weight:600;color:var(--navy)}
+.page-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.btn{padding:6px 16px;border-radius:4px;font-size:13px;cursor:pointer;border:1px solid;transition:all .15s}
+.btn-primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+.btn-primary:hover{background:var(--blue-dk)}
+.btn-ghost{background:#fff;color:var(--blue);border-color:var(--border)}
+.btn-ghost:hover{border-color:var(--blue);background:#f0f6ff}
+.btn-sm{padding:4px 12px;font-size:12px}
+.content-area{padding:16px 20px}
+.section-card{background:#fff;border:1px solid var(--border);border-radius:6px;margin-bottom:14px;overflow:hidden}
+.section-header{background:#f0f4fa;border-bottom:1px solid var(--border);padding:8px 14px;display:flex;align-items:center;gap:8px}
+.section-label{font-size:12px;font-weight:600;color:var(--navy);text-transform:uppercase;letter-spacing:.4px}
+.section-body{padding:12px 14px}
+.form-grid{display:grid;gap:10px}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:1fr 1fr 1fr}
+.field label{font-size:11px;color:var(--muted);display:block;margin-bottom:3px;font-weight:500}
+.field input,.field select{width:100%;padding:6px 9px;border:1px solid var(--border);border-radius:3px;font-size:13px;color:var(--text);background:var(--yellow);outline:none}
+.field input:focus,.field select:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(0,112,242,.15)}
+.data-table{width:100%;border-collapse:collapse;font-size:12px}
+.data-table th{background:#f0f4fa;padding:7px 10px;text-align:left;font-size:11px;font-weight:600;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap}
+.data-table td{padding:6px 10px;border-bottom:1px solid #f0f1f3;color:var(--text)}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:var(--row)}
+.data-table .ic{background:var(--yellow);padding:2px 4px}
+.data-table .ic input,.data-table .ic select{border:1px solid #d9dde7;padding:3px 6px;border-radius:2px;font-size:12px;width:100%;background:transparent;color:var(--text)}
+.data-table .ic input:focus{border-color:var(--blue);outline:none}
+.data-table .tr-total td{background:#eaf3ff;font-weight:600;color:var(--navy);border-top:2px solid var(--blue)}
+.data-table .tr-sub td{background:#f0f6ff;font-weight:500;color:var(--navy)}
+.task-list{display:flex;flex-direction:column;gap:8px}
+.task-item{background:#fff;border:1px solid var(--border);border-radius:5px;padding:10px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .15s}
+.task-item:hover{border-color:var(--blue);box-shadow:0 0 0 2px rgba(0,112,242,.08)}
+.task-num{background:var(--navy);color:#fff;border-radius:3px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0}
+.task-info{flex:1}
+.task-name{font-size:13px;font-weight:500;color:var(--text)}
+.task-meta{font-size:11px;color:var(--muted);margin-top:2px}
+.task-cost{font-size:13px;font-weight:600;color:var(--navy);white-space:nowrap}
+.badge{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:500}
+.badge-on{background:#e8f5e9;color:#2e7d32}
+.badge-off{background:#fff8e1;color:#f57f17}
+.add-task-btn{background:#f0f6ff;border:1px dashed var(--blue);border-radius:5px;padding:10px 14px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;color:var(--blue);font-size:13px;transition:all .15s}
+.add-task-btn:hover{background:#e0efff}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.kpi{background:#fff;border:1px solid var(--border);border-radius:6px;padding:12px 14px}
+.kpi-lbl{font-size:11px;color:var(--muted);font-weight:500;margin-bottom:4px}
+.kpi-val{font-size:20px;font-weight:600;color:var(--navy)}
+.kpi-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.prog{height:8px;background:#e8edf4;border-radius:4px;margin-top:6px;overflow:hidden}
+.prog-fill{height:100%;border-radius:4px;background:var(--blue)}
+.chart-card{background:#fff;border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:14px}
+.chart-ttl{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.4px}
+.bchart{display:flex;align-items:flex-end;gap:8px;height:110px}
+.bitem{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.bitem .bar{width:100%;border-radius:3px 3px 0 0}
+.bitem .blbl{font-size:10px;color:var(--muted);text-align:center}
+.bitem .bval{font-size:10px;font-weight:600;color:var(--navy)}
+.note{background:#fffde7;border:1px solid #f9d74d;border-radius:4px;padding:6px 10px;font-size:11px;color:#7a6000;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.task-form-panel{display:none}
+.task-form-panel.open{display:block}
+.ii{font-size:14px;vertical-align:-2px}
+
+/* ── LOGIN MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:100;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:10px;padding:32px 28px;width:340px;box-shadow:0 8px 40px rgba(0,0,0,.18);position:relative}
+.modal-logo{text-align:center;margin-bottom:20px}
+.modal-logo img{height:56px}
+.modal h2{font-size:17px;font-weight:600;color:var(--navy);text-align:center;margin-bottom:4px}
+.modal p{font-size:12px;color:var(--muted);text-align:center;margin-bottom:20px}
+.modal .field{margin-bottom:12px}
+.modal .field label{font-size:12px;color:var(--navy);font-weight:500;margin-bottom:5px;display:block}
+.modal .field input{background:#f5f8ff;border:1px solid var(--border);border-radius:5px;padding:8px 10px;font-size:13px;width:100%}
+.modal .field input:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(0,112,242,.12);outline:none}
+.modal-footer{margin-top:18px}
+.btn-login{width:100%;padding:10px;background:var(--navy);color:#fff;border:none;border-radius:5px;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+.btn-login:hover{background:var(--blue-dk)}
+.modal-close{position:absolute;top:12px;right:14px;background:none;border:none;font-size:20px;color:var(--muted);cursor:pointer}
+</style>
+</head>
+<body>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay open" id="login-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeLogin()">✕</button>
+    <div class="modal-logo"><img src="data:image/jpeg;base64,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" alt="BIRD"/></div>
+    <h2>Sign in to BIRD Budget</h2>
+    <p>Israel-U.S. Binational Industrial Research and Development Foundation</p>
+    <div class="field"><label>Email</label><input type="email" placeholder="you@company.com" id="login-email"/></div>
+    <div class="field"><label>Password</label><input type="password" placeholder="••••••••"/></div>
+    <div class="modal-footer">
+      <button class="btn-login" onclick="closeLogin()">Sign In</button>
+    </div>
+  </div>
+</div>
+
+<div class="shell">
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <img class="logo-img" src="data:image/jpeg;base64,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" alt="BIRD"/>
+    <div class="app-name">Budget</div>
+    <div class="topbar-right">
+      <div class="bell-btn"><i class="ti ti-bell" style="font-size:17px"></i><div class="bell-dot"></div></div>
+      <div class="user-pill" onclick="openLogin()">
+        <div class="user-avatar">PA</div>
+        <div>
+          <div class="user-name">Project Admin</div>
+          <div class="user-role">BIRD-25 · Administrator</div>
+        </div>
+        <i class="ti ti-chevron-down" style="font-size:13px;color:var(--muted);margin-left:2px"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOGGLE NAV -->
+  <div class="nav-wrap">
+    <div class="tab-toggle">
+      <div class="ttab" id="ttab-tasks" onclick="switchTab('tasks')"><i class="ti ti-list-check"></i>Tasks</div>
+      <div class="ttab" id="ttab-budget" onclick="switchTab('budget')"><i class="ti ti-calculator"></i>Total Budget</div>
+      <div class="ttab active" id="ttab-report" onclick="switchTab('report')"><i class="ti ti-chart-bar"></i>Budget Report</div>
+    </div>
+    <div class="nav-right">
+      <span style="font-size:11px;color:var(--muted)">BIRD-25 Budget Preparation &nbsp;·&nbsp; v25.07.14.1</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       SCREEN 1: TASKS
+  ══════════════════════════════════════════════ -->
+  <div id="screen-tasks" class="screen">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Task Management</div>
+        <div class="page-sub">Define up to 25 project tasks — enter task name, dates, and per-category costs</div>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="openAddTask()"><i class="ti ti-plus ii"></i> Add Task</button>
+    </div>
+    <div class="content-area">
+      <div class="note"><i class="ti ti-info-circle" style="font-size:15px"></i> Yellow-highlighted cells are input fields. All other values are calculated automatically.</div>
+
+      <!-- Add Task Form -->
+      <div id="add-task-form" class="section-card task-form-panel" style="border-color:#0a6ed1;margin-bottom:14px">
+        <div class="section-header" style="background:#e8f0fe;border-color:#b3c8f5">
+          <i class="ti ti-file-plus" style="font-size:15px;color:var(--navy)"></i>
+          <span class="section-label">New Task</span>
+          <button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="closeAddTask()">✕ Close</button>
+        </div>
+        <div class="section-body">
+          <div class="form-grid g3" style="margin-bottom:10px">
+            <div class="field"><label>Task #</label><input type="text" value="3"/></div>
+            <div class="field"><label>Task Name</label><input type="text" placeholder="e.g. System Integration"/></div>
+            <div class="field"><label>Duration (months)</label><input type="number" placeholder="0"/></div>
+          </div>
+          <div class="form-grid g2" style="margin-bottom:12px">
+            <div class="field"><label>From Date</label><input type="text" placeholder="DD/MM/YY"/></div>
+            <div class="field"><label>To Date</label><input type="text" placeholder="DD/MM/YY"/></div>
+          </div>
+          <div style="font-size:12px;font-weight:600;color:var(--navy);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border)">I. Direct Labor</div>
+          <table class="data-table" style="margin-bottom:10px">
+            <thead><tr><th>#</th><th>Employee Name</th><th>Profession</th><th>Location</th><th>Annual Salary ($)</th><th>% on Task</th><th>Days in Task</th><th>Cost ($)</th></tr></thead>
+            <tbody>
+              <tr><td style="color:var(--muted);font-size:11px">1</td><td class="ic"><input placeholder="moshe"/></td><td class="ic"><input placeholder="developer"/></td><td class="ic"><input placeholder="US"/></td><td class="ic"><input type="number" placeholder="90000"/></td><td class="ic"><input type="number" placeholder="20"/></td><td class="ic"><input type="number" placeholder="0"/></td><td style="color:var(--muted);font-style:italic">auto</td></tr>
+              <tr><td style="color:var(--muted);font-size:11px">2</td><td class="ic"><input/></td><td class="ic"><input/></td><td class="ic"><input placeholder="-"/></td><td class="ic"><input type="number" placeholder="0"/></td><td class="ic"><input type="number"/></td><td class="ic"><input type="number" placeholder="0"/></td><td style="color:var(--muted);font-style:italic">auto</td></tr>
+            </tbody>
+            <tfoot><tr class="tr-sub"><td colspan="7" style="text-align:right;padding-right:12px">Subtotal Direct Labor + Overhead (25%)</td><td>$0</td></tr></tfoot>
+          </table>
+          <div style="font-size:12px;font-weight:600;color:var(--navy);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border)">II. Equipment (Purchased)</div>
+          <table class="data-table" style="margin-bottom:10px">
+            <thead><tr><th>#</th><th>Description</th><th>Unit Cost ($)</th><th>No. of Units</th><th>% on Task</th><th>Depreciation %</th><th>Cost ($)</th></tr></thead>
+            <tbody><tr><td style="color:var(--muted);font-size:11px">1</td><td class="ic"><input/></td><td class="ic"><input type="number" placeholder="0"/></td><td class="ic"><input type="number" placeholder="0"/></td><td class="ic"><input type="number" placeholder="0"/></td><td style="color:var(--muted)">33.3%</td><td style="color:var(--muted);font-style:italic">auto</td></tr></tbody>
+            <tfoot><tr class="tr-sub"><td colspan="6" style="text-align:right">Subtotal Equipment</td><td>$0</td></tr></tfoot>
+          </table>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+            <div>
+              <div style="font-size:12px;font-weight:600;color:var(--navy);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border)">III. Expendable Materials</div>
+              <table class="data-table">
+                <thead><tr><th>#</th><th>Description</th><th>Cost ($)</th></tr></thead>
+                <tbody><tr><td style="color:var(--muted);font-size:11px">1</td><td class="ic"><input/></td><td class="ic"><input type="number" placeholder="0"/></td></tr></tbody>
+                <tfoot><tr class="tr-sub"><td colspan="2" style="text-align:right">Subtotal</td><td>$0</td></tr></tfoot>
+              </table>
+            </div>
+            <div>
+              <div style="font-size:12px;font-weight:600;color:var(--navy);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border)">V. Subcontractors</div>
+              <table class="data-table">
+                <thead><tr><th>Service / Name</th><th>Country</th><th>Cost ($)</th></tr></thead>
+                <tbody><tr><td class="ic"><input/></td><td class="ic"><input/></td><td class="ic"><input type="number" placeholder="0"/></td></tr></tbody>
+                <tfoot><tr class="tr-sub"><td colspan="2" style="text-align:right">Subtotal</td><td>$0</td></tr></tfoot>
+              </table>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+            <div>
+              <div style="font-size:12px;font-weight:600;color:var(--navy);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border)">IV. Foreign Travel</div>
+              <table class="data-table">
+                <thead><tr><th>Destination</th><th>Purpose</th><th>$/Person</th><th>Trips</th><th>People</th><th>Total</th></tr></thead>
+                <tbody><tr><td class="ic"><input/></td><td class="ic"><input/></td><td class="ic"><input type="number" placeholder="0"/></td><td class="ic"><input type="number" placeholder="0"/></td><td class="ic"><input type="number" placeholder="0"/></td><td style="color:var(--muted);font-style:italic">auto</td></tr></tbody>
+                <tfoot><tr class="tr-sub"><td colspan="5" style="text-align:right">Total Travel</td><td>$0</td></tr></tfoot>
+              </table>
+            </div>
+            <div>
+              <div style="font-size:12px;font-weight:600;color:var(--navy);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border)">VI. Consultants</div>
+              <table class="data-table">
+                <thead><tr><th>Service</th><th>Name</th><th>Rate ($/hr)</th><th>Hours</th><th>Country</th><th>Cost</th></tr></thead>
+                <tbody><tr><td class="ic"><input/></td><td class="ic"><input/></td><td class="ic"><input type="number" placeholder="0"/></td><td class="ic"><input type="number" placeholder="0"/></td><td class="ic"><input/></td><td style="color:var(--muted);font-style:italic">auto</td></tr></tbody>
+                <tfoot><tr class="tr-sub"><td colspan="5" style="text-align:right">Subtotal</td><td>$0</td></tr></tfoot>
+              </table>
+            </div>
+          </div>
+          <div style="font-size:12px;font-weight:600;color:var(--navy);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border)">VII. Other Expenses</div>
+          <table class="data-table">
+            <thead><tr><th>#</th><th>Description</th><th>Cost ($)</th></tr></thead>
+            <tbody><tr><td style="color:var(--muted);font-size:11px">1</td><td class="ic"><input/></td><td class="ic"><input type="number" placeholder="0"/></td></tr></tbody>
+            <tfoot>
+              <tr class="tr-sub"><td colspan="2" style="text-align:right">Subtotal before G&amp;A</td><td>$0</td></tr>
+              <tr class="tr-sub"><td colspan="2" style="text-align:right">G&amp;A @ 5%</td><td>$0</td></tr>
+              <tr class="tr-total"><td colspan="2" style="text-align:right">Total Task Cost</td><td>$0</td></tr>
+            </tfoot>
+          </table>
+          <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px">
+            <button class="btn btn-ghost" onclick="closeAddTask()">Cancel</button>
+            <button class="btn btn-primary" onclick="closeAddTask()"><i class="ti ti-device-floppy ii"></i> Save Task</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Task List -->
+      <div class="task-list">
+        <div class="task-item"><div class="task-num">1</div><div class="task-info"><div class="task-name">System Design &amp; Architecture</div><div class="task-meta">01/07/25 → 31/10/25 · 4 months</div></div><span class="badge badge-on">Active</span><div class="task-cost">$24,500</div><i class="ti ti-chevron-right" style="font-size:16px;color:var(--muted)"></i></div>
+        <div class="task-item"><div class="task-num">2</div><div class="task-info"><div class="task-name">Prototype Development</div><div class="task-meta">01/11/25 → 28/02/26 · 4 months</div></div><span class="badge badge-on">Active</span><div class="task-cost">$38,200</div><i class="ti ti-chevron-right" style="font-size:16px;color:var(--muted)"></i></div>
+        <div class="task-item" style="opacity:.5"><div class="task-num" style="background:#b0bec5">3</div><div class="task-info"><div class="task-name" style="color:var(--muted)">New task…</div><div class="task-meta">Not yet defined</div></div><span class="badge badge-off">Draft</span><div class="task-cost" style="color:var(--muted)">—</div><i class="ti ti-chevron-right" style="font-size:16px;color:var(--muted)"></i></div>
+      </div>
+      <div class="add-task-btn" style="margin-top:10px" onclick="openAddTask()"><i class="ti ti-plus" style="font-size:16px"></i> Add New Task</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       SCREEN 2: TOTAL BUDGET
+  ══════════════════════════════════════════════ -->
+  <div id="screen-budget" class="screen">
+    <div class="page-header">
+      <div><div class="page-title">Total Budget — Annex A</div><div class="page-sub">Define employees, equipment, and named resources shared across all tasks</div></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-ghost btn-sm"><i class="ti ti-download ii"></i> Export</button>
+        <button class="btn btn-primary btn-sm"><i class="ti ti-device-floppy ii"></i> Save</button>
+      </div>
+    </div>
+    <div class="content-area">
+      <div class="note"><i class="ti ti-info-circle" style="font-size:15px"></i> Names and definitions entered here propagate to all task worksheets automatically.</div>
+      <div class="section-card">
+        <div class="section-header"><i class="ti ti-building" style="font-size:14px;color:var(--navy)"></i><span class="section-label">Organization Information</span></div>
+        <div class="section-body">
+          <div class="form-grid g3">
+            <div class="field"><label>Company Name</label><input type="text" placeholder="Enter company name"/></div>
+            <div class="field"><label>Project Duration (months)</label><input type="number" placeholder="24"/></div>
+            <div class="field"><label>Project ID / Reference</label><input type="text" placeholder="BIRD-25-xxx"/></div>
+          </div>
+        </div>
+      </div>
+      <div class="section-card">
+        <div class="section-header"><i class="ti ti-users" style="font-size:14px;color:var(--navy)"></i><span class="section-label">I. Direct Labor</span></div>
+        <div class="section-body">
+          <table class="data-table">
+            <thead><tr><th>#</th><th>Employee Name</th><th>Profession</th><th>Location</th><th>Annual Salary ($)</th><th>% on Project</th><th>Cost to Project ($)</th></tr></thead>
+            <tbody>
+              <tr><td style="color:var(--muted);font-size:11px">1</td><td class="ic"><input value="moshe"/></td><td class="ic"><input value="developer"/></td><td class="ic"><select><option>US</option><option>IL</option><option>-</option></select></td><td class="ic"><input type="number" value="90000"/></td><td class="ic"><input type="number" value="0"/></td><td><span style="color:#2e6b0a;font-weight:500">$0</span></td></tr>
+              <tr><td style="color:var(--muted);font-size:11px">2</td><td class="ic"><input/></td><td class="ic"><input/></td><td class="ic"><select><option>-</option><option>US</option><option>IL</option></select></td><td class="ic"><input type="number" placeholder="0"/></td><td class="ic"><input type="number" placeholder="0"/></td><td><span style="color:var(--muted)">$0</span></td></tr>
+              <tr><td style="color:var(--muted);font-size:11px">3</td><td class="ic"><input/></td><td class="ic"><input/></td><td class="ic"><select><option>-</option><option>US</option><option>IL</option></select></td><td class="ic"><input type="number" placeholder="0"/></td><td class="ic"><input type="number" placeholder="0"/></td><td><span style="color:var(--muted)">$0</span></td></tr>
+            </tbody>
+            <tfoot>
+              <tr class="tr-sub"><td colspan="6" style="text-align:right">Total Direct Labor (incl. social benefits)</td><td>$0</td></tr>
+              <tr class="tr-sub"><td colspan="6" style="text-align:right">Overhead @ 25%</td><td>$0</td></tr>
+              <tr class="tr-total"><td colspan="6" style="text-align:right">Subtotal Direct Labor + Overhead</td><td>$0</td></tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+      <div class="section-card">
+        <div class="section-header"><i class="ti ti-cpu" style="font-size:14px;color:var(--navy)"></i><span class="section-label">II. Equipment</span></div>
+        <div class="section-body">
+          <div style="font-size:12px;font-weight:600;color:#555;margin-bottom:6px">Purchased Equipment</div>
+          <table class="data-table" style="margin-bottom:12px">
+            <thead><tr><th>#</th><th>Description</th><th>Unit Cost ($)</th><th>No. of Units</th><th>% on Project</th><th>Depreciation %</th><th>Depreciation ($)</th></tr></thead>
+            <tbody><tr><td style="color:var(--muted);font-size:11px">1</td><td class="ic"><input/></td><td class="ic"><input type="number" placeholder="0"/></td><td class="ic"><input type="number" placeholder="0"/></td><td class="ic"><input type="number" placeholder="0"/></td><td style="color:var(--muted)">33.3%</td><td style="color:var(--muted)">$0</td></tr></tbody>
+            <tfoot><tr class="tr-sub"><td colspan="6" style="text-align:right">Subtotal Purchased Equipment</td><td>$0</td></tr></tfoot>
+          </table>
+          <div style="font-size:12px;font-weight:600;color:#555;margin-bottom:6px">Leased Equipment</div>
+          <table class="data-table">
+            <thead><tr><th>#</th><th>Description</th><th>Monthly Lease ($/unit)</th><th>No. of Units</th><th>% on Project</th><th></th><th>Total Leasing ($)</th></tr></thead>
+            <tbody><tr><td style="color:var(--muted);font-size:11px">1</td><td class="ic"><input/></td><td class="ic"><input type="number" placeholder="0"/></td><td class="ic"><input type="number" placeholder="0"/></td><td class="ic"><input type="number" placeholder="0"/></td><td></td><td style="color:var(--muted)">$0</td></tr></tbody>
+            <tfoot><tr class="tr-total"><td colspan="6" style="text-align:right">Subtotal Equipment (Purchased + Leased)</td><td>$0</td></tr></tfoot>
+          </table>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="section-card">
+          <div class="section-header"><i class="ti ti-box" style="font-size:14px;color:var(--navy)"></i><span class="section-label">III. Expendable Materials</span></div>
+          <div class="section-body">
+            <table class="data-table">
+              <thead><tr><th>#</th><th>Description</th><th>Cost ($)</th></tr></thead>
+              <tbody><tr><td style="color:var(--muted);font-size:11px">1</td><td class="ic"><input/></td><td class="ic"><input type="number" placeholder="0"/></td></tr><tr><td style="color:var(--muted);font-size:11px">2</td><td class="ic"><input/></td><td class="ic"><input type="number" placeholder="0"/></td></tr></tbody>
+              <tfoot><tr class="tr-sub"><td colspan="2" style="text-align:right">Subtotal</td><td>$0</td></tr></tfoot>
+            </table>
+          </div>
+        </div>
+        <div class="section-card">
+          <div class="section-header"><i class="ti ti-building-factory" style="font-size:14px;color:var(--navy)"></i><span class="section-label">V. Subcontractors</span></div>
+          <div class="section-body">
+            <table class="data-table">
+              <thead><tr><th>Service</th><th>Subcontractor</th><th>Country</th><th>Cost ($)</th></tr></thead>
+              <tbody><tr><td class="ic"><input/></td><td class="ic"><input/></td><td class="ic"><input/></td><td class="ic"><input type="number" placeholder="0"/></td></tr></tbody>
+              <tfoot><tr class="tr-sub"><td colspan="3" style="text-align:right">Subtotal</td><td>$0</td></tr></tfoot>
+            </table>
+          </div>
+        </div>
+        <div class="section-card">
+          <div class="section-header"><i class="ti ti-plane" style="font-size:14px;color:var(--navy)"></i><span class="section-label">IV. Travel</span></div>
+          <div class="section-body">
+            <div style="font-size:11px;font-weight:600;color:#555;margin-bottom:4px">Foreign Travel</div>
+            <table class="data-table" style="margin-bottom:8px">
+              <thead><tr><th>Destination</th><th>Purpose</th><th>$/Person</th><th>Trips</th><th>People</th><th>Total</th></tr></thead>
+              <tbody><tr><td class="ic"><input/></td><td class="ic"><input/></td><td class="ic"><input type="number" placeholder="0"/></td><td class="ic"><input type="number" placeholder="0"/></td><td class="ic"><input type="number" placeholder="0"/></td><td style="color:var(--muted);font-style:italic">auto</td></tr></tbody>
+            </table>
+            <div style="font-size:11px;font-weight:600;color:#555;margin-bottom:4px">Domestic Travel</div>
+            <table class="data-table">
+              <thead><tr><th>Destination</th><th>Purpose</th><th>$/Person</th><th>Trips</th><th>People</th><th>Total</th></tr></thead>
+              <tbody><tr><td class="ic"><input/></td><td class="ic"><input/></td><td class="ic"><input type="number" placeholder="0"/></td><td class="ic"><input type="number" placeholder="0"/></td><td class="ic"><input type="number" placeholder="0"/></td><td style="color:var(--muted);font-style:italic">auto</td></tr></tbody>
+              <tfoot><tr class="tr-sub"><td colspan="5" style="text-align:right">Total Travel</td><td>$0</td></tr></tfoot>
+            </table>
+          </div>
+        </div>
+        <div class="section-card">
+          <div class="section-header"><i class="ti ti-briefcase" style="font-size:14px;color:var(--navy)"></i><span class="section-label">VI. Consultants</span></div>
+          <div class="section-body">
+            <table class="data-table">
+              <thead><tr><th>Service</th><th>Name</th><th>Rate ($/hr)</th><th>Hours</th><th>Country</th><th>Cost ($)</th></tr></thead>
+              <tbody><tr><td class="ic"><input/></td><td class="ic"><input/></td><td class="ic"><input type="number" placeholder="0"/></td><td class="ic"><input type="number" placeholder="0"/></td><td class="ic"><input/></td><td style="color:var(--muted);font-style:italic">auto</td></tr></tbody>
+              <tfoot><tr class="tr-sub"><td colspan="5" style="text-align:right">Subtotal</td><td>$0</td></tr></tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="section-card" style="margin-top:14px">
+        <div class="section-header"><i class="ti ti-dots-circle-horizontal" style="font-size:14px;color:var(--navy)"></i><span class="section-label">VII. Other Expenses</span></div>
+        <div class="section-body">
+          <table class="data-table">
+            <thead><tr><th>#</th><th>Description</th><th>Cost ($)</th></tr></thead>
+            <tbody><tr><td style="color:var(--muted);font-size:11px">1</td><td class="ic"><input/></td><td class="ic"><input type="number" placeholder="0"/></td></tr></tbody>
+            <tfoot>
+              <tr class="tr-sub"><td colspan="2" style="text-align:right">Subtotal before G&amp;A</td><td>$62,700</td></tr>
+              <tr class="tr-sub"><td colspan="2" style="text-align:right">G&amp;A @ 5%</td><td>$3,135</td></tr>
+              <tr class="tr-total"><td colspan="2" style="text-align:right;font-size:13px">Total Project Budget</td><td style="font-size:14px">$65,835</td></tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+      <div class="section-card">
+        <div class="section-header"><i class="ti ti-timeline" style="font-size:14px;color:var(--navy)"></i><span class="section-label">Projected Expenditure by Segment</span></div>
+        <div class="section-body">
+          <table class="data-table">
+            <thead><tr><th>Segment #</th><th>Duration (months)</th><th>% of Total Budget</th><th>Projected Expenditure ($)</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td class="ic"><input type="number" placeholder="0"/></td><td class="ic"><input type="number" placeholder="0"/></td><td style="color:var(--muted);font-style:italic">auto</td></tr>
+              <tr><td>2</td><td class="ic"><input type="number" placeholder="0"/></td><td class="ic"><input type="number" placeholder="0"/></td><td style="color:var(--muted);font-style:italic">auto</td></tr>
+              <tr><td>3</td><td class="ic"><input type="number" placeholder="0"/></td><td class="ic"><input type="number" placeholder="0"/></td><td style="color:var(--muted);font-style:italic">auto</td></tr>
+            </tbody>
+            <tfoot><tr class="tr-total"><td>Total</td><td>0</td><td>0%</td><td>$0</td></tr></tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       SCREEN 3: BUDGET REPORT  (default)
+  ══════════════════════════════════════════════ -->
+  <div id="screen-report" class="screen active">
+    <div class="page-header">
+      <div><div class="page-title">Budget Report — Tasks Summary</div><div class="page-sub">Read-only. Aggregated cost breakdown across all tasks by expense category.</div></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-ghost btn-sm"><i class="ti ti-printer ii"></i> Print</button>
+        <button class="btn btn-ghost btn-sm"><i class="ti ti-download ii"></i> Export Excel</button>
+      </div>
+    </div>
+    <div class="content-area">
+      <div class="kpi-row">
+        <div class="kpi"><div class="kpi-lbl"><i class="ti ti-list-check" style="font-size:13px;vertical-align:-1px"></i> Active Tasks</div><div class="kpi-val">2</div><div class="kpi-sub">of 25 max</div><div class="prog"><div class="prog-fill" style="width:8%"></div></div></div>
+        <div class="kpi"><div class="kpi-lbl"><i class="ti ti-currency-dollar" style="font-size:13px;vertical-align:-1px"></i> Total Budget</div><div class="kpi-val">$65,835</div><div class="kpi-sub">incl. G&amp;A 5%</div></div>
+        <div class="kpi"><div class="kpi-lbl"><i class="ti ti-users" style="font-size:13px;vertical-align:-1px"></i> Direct Labor Share</div><div class="kpi-val">62%</div><div class="kpi-sub">$40,800 allocated</div><div class="prog"><div class="prog-fill" style="width:62%;background:var(--navy)"></div></div></div>
+        <div class="kpi"><div class="kpi-lbl"><i class="ti ti-calendar" style="font-size:13px;vertical-align:-1px"></i> Project Duration</div><div class="kpi-val">24 mo</div><div class="kpi-sub">Jul 2025 – Jun 2027</div></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-ttl">Budget allocation by expense category ($)</div>
+        <div class="bchart">
+          <div class="bitem"><div class="bval">$40.8K</div><div class="bar" style="height:90px;background:var(--navy)"></div><div class="blbl">Direct Labor</div></div>
+          <div class="bitem"><div class="bval">$10.2K</div><div class="bar" style="height:22px;background:#0a6ed1"></div><div class="blbl">Overhead</div></div>
+          <div class="bitem"><div class="bval">$5.8K</div><div class="bar" style="height:13px;background:#2196f3"></div><div class="blbl">Equipment</div></div>
+          <div class="bitem"><div class="bval">$3.2K</div><div class="bar" style="height:7px;background:#64b5f6"></div><div class="blbl">Materials</div></div>
+          <div class="bitem"><div class="bval">$2.1K</div><div class="bar" style="height:5px;background:#90caf9"></div><div class="blbl">Travel</div></div>
+          <div class="bitem"><div class="bval">$0</div><div class="bar" style="height:2px;background:#bbdefb"></div><div class="blbl">Subcontract</div></div>
+          <div class="bitem"><div class="bval">$0</div><div class="bar" style="height:2px;background:#e3f2fd"></div><div class="blbl">Consultants</div></div>
+          <div class="bitem"><div class="bval">$1.4K</div><div class="bar" style="height:3px;background:#b3d9ff"></div><div class="blbl">Other</div></div>
+          <div class="bitem"><div class="bval">$3.1K</div><div class="bar" style="height:7px;background:#7c9cbf"></div><div class="blbl">G&amp;A</div></div>
+        </div>
+      </div>
+      <div class="section-card">
+        <div class="section-header"><i class="ti ti-table" style="font-size:14px;color:var(--navy)"></i><span class="section-label">Cost Components by Task</span><span style="margin-left:auto;font-size:11px;color:var(--muted);font-weight:400">All values in USD</span></div>
+        <div class="section-body" style="padding:0;overflow-x:auto">
+          <table class="data-table" style="table-layout:fixed;width:100%;min-width:900px">
+            <thead><tr>
+              <th style="width:40px">Task #</th><th style="width:170px">Task Name</th><th style="width:65px">Duration</th>
+              <th style="width:80px">Direct Labor</th><th style="width:75px">Labor OH 25%</th><th style="width:70px">Equipment</th>
+              <th style="width:70px">Materials</th><th style="width:60px">Travel</th><th style="width:75px">Subcontract</th>
+              <th style="width:75px">Consultants</th><th style="width:60px">Other</th><th style="width:60px">G&amp;A 5%</th><th style="width:85px">Total Task</th>
+            </tr></thead>
+            <tbody>
+              <tr><td style="font-weight:600;color:var(--navy)">1</td><td>System Design &amp; Architecture</td><td style="text-align:center">4 mo</td><td>$15,200</td><td>$3,800</td><td>$2,000</td><td>$800</td><td>$700</td><td>$0</td><td>$0</td><td>$500</td><td>$1,150</td><td style="font-weight:600;color:var(--navy)">$24,150</td></tr>
+              <tr><td style="font-weight:600;color:var(--navy)">2</td><td>Prototype Development</td><td style="text-align:center">4 mo</td><td>$25,600</td><td>$6,400</td><td>$3,800</td><td>$2,400</td><td>$1,400</td><td>$0</td><td>$0</td><td>$900</td><td>$1,985</td><td style="font-weight:600;color:var(--navy)">$42,485</td></tr>
+              <tr style="opacity:.4"><td>3–25</td><td colspan="11" style="font-style:italic;color:var(--muted)">Tasks not yet defined…</td><td>—</td></tr>
+            </tbody>
+            <tfoot>
+              <tr class="tr-total"><td colspan="3" style="text-align:right">Total for Project</td><td>$40,800</td><td>$10,200</td><td>$5,800</td><td>$3,200</td><td>$2,100</td><td>$0</td><td>$0</td><td>$1,400</td><td>$3,135</td><td style="font-size:13px">$65,835</td></tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+      <div style="margin-top:10px;display:flex;gap:10px;justify-content:flex-end;padding-bottom:8px">
+        <button class="btn btn-ghost btn-sm" onclick="switchTab('tasks')"><i class="ti ti-arrow-left ii"></i> Tasks</button>
+        <button class="btn btn-ghost btn-sm" onclick="switchTab('budget')">Edit Total Budget</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- .shell -->
+
+<script>
+const LOGO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wgARCADIAMgDASIAAhEBAxEB/8QAHAABAAEFAQEAAAAAAAAAAAAAAAcCAwQFBgEI/8QAGgEBAQADAQEAAAAAAAAAAAAAAAECAwQGBf/aAAwDAQACEAMQAAAB+qQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACgranazL0XEAAAAAAAAAc7Nmb8528/i9nf6Pk9fju+p/cTL7/BhYAAAAAAAKCuCJbx9f0YC2WZz3F7C3mYu6mzsMOKuoz5PpRw7t8Vuo46ODO758+8rzmtywkbXRX3tTtc57oeHsCZADXS39ddszZdr9s1qoR+g9Fp+tEnNZtfH6+/nXNhnxyO7R3eGweft8xv45FqjPCyki2OP3RIOJyfKYZTM1G317SjSzO7c88mdm/avL5j1ZqVa67QsfcbOOu0/Y4+XfW35YZ8ur0NviduqT8birGUki/DO+l73G5Kykj7ONMSWTr8M7BZSQpnEtYkSdVHd3oP2GUmKmGEszeRX7EsOZ6bDMJcLXYvA7Ncq6rks+zZ7WN6MpKWNHVgl21HWLLIPnDaklS5GnQS5XYRviJI+LxGOd2jvWZYzBej+jHKT8jmem17Alw8PcLNXfzddLhX6sdlm4mTjnmFsr9leurS5TBqXZ4O29a9JnZqtC3w1F/YCxfJQAFFY8eimoKagp8rFNQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAf/xAAtEAACAwABAgUCBAcAAAAAAAADBAECBQYAEhARExQVIEAHFhcxIyQwNTZgcP/aAAgBAQABBQL/AIha9aQPVTMb7bS0gZa2hr6HLnysqcQDxFt9ccT5x9ns7a+KtMv800HtgGKBDGBkgsR/mD6g/SW+z3OPk1NzS2vWqFRXiQVEXOVt6G5QVbbpsNLjnNmdJ77C14pXuJodaYFiJNVBwgOZi30utHXPuk/lOGhTRd5M+7rr4C/Docri7utGHl/qHcIS8pHTbFz5hq1uerTx6v4iehYZKlp9Z2KL0qvdyxWrWuMI0qN59N2dSmpyHYa0VeLgx8I20TS3K+msgrxUHFbNsI8//wAT0BRHF4PLPMOKKazNPOn6e8p3M83DuPAIth/Uw36UhW7LSQj82sLPENax7FZsa23lmnIx+OwQWhqsb5e5Xh4cDirGuzWsUq+uu0qPiOOK98pUjiWYtndfA5c0X41jpMwSs2K+uAv0EZsa8VFnjgN3pM16ciXgHXcR+f4SQewmh1zDDJrFM8HCpxrhvoWiPLw5d/ZLazoNEb+hKA9/RYDl6LJ9EjVi8gzy0/Mba3cXLaEyl1a0Ur3E0JIUaVQqzN7sXat5Bzg1BdyzDNFoEtYl7sXatMjSjL44rnn8dGFbKiTxGWDYqLK08bzZAsmiqZ/NW0xCw0QquYWY00JZULnU2GS37deVPUklO+bDXhxxRPoDImh9kd379VrFIilYtJKxfx5dE2zNKpU3vevUWHqtkdC6bKT1HXswjrjeefLdM1p7hjA02nnUXoMwhyR3TdLoe7MVm7jalfesGf3q3vvw00i78lpE6+cdb6a33O0Tj5ryE59nj7JWkPBtMLwQ4SC/U560ipj5nqJ0xSXDiIrjazFXehZiGdcqQD3PmrNdVwM+ovy/n+nOIjNSZybVYrgpMWXHczGWq11OChYJ8fNLZjCzSW9gkcC2Yqp0Bca1fDkLdlUV9B1loLTRm8Lz+JYopXh/y2gWzG+77QrjPqUfZGvXQaXzlffEuPZfa6A6+4rxqs+/x1TGbrpNexnaPGL751BF8t0HHmmTL+4N8kuy43oceZKyh4NKBdEDHSWufLVZqBICoQ42eoX4lT3VVFp6FkoqV+HUi+fgpIUhQNZJkIMR7RalaJrrmCEYeq5KdWq4qNSezB20wkB9UwkB1tkp3CFBdfoIKL1+lluAyBbtt6t9Dq1w54aL3asZqZusrAOiM3Zv3Dz69kB6gJHpiPKP6vbHnMecRHl1NYmeorFfCKxWO2O6axb/AHH/xAArEQABAwMCBQQBBQAAAAAAAAABAAIDERIhBDEQE0FRYTBCUKEFcZGiscH/2gAIAQMBAT8B+ELS3cemxjpXBjBUrSaIaTAF0v01SQxzMc0be55/xHB9LSTu0slzd010boqjEf8AJ5ThW0SNz7WdvJUn4+AAwht0p/Zqlj5TyytaKV7g7C5jlzHd0MjiBVDGy/paHVnTvH1Xp5TSGVZAc+56fJHHEc0j+3qV/MeXAUTiAchXtHRVac0RfhDKAqunjh18r9FBrhHHZLkDYdz5Wo1MmpffIeDiqjsrgqjZXK9Xq/qr1er+JIBVQVcrgrgqjsqhVorgrh2VwQ4UQFVYFaN1YNyrFaOFFQKnxX//xAAoEQACAgEBBgYDAAAAAAAAAAAAAQIREiEDEBMxQVEgMFBhkbEyccH/2gAIAQIBAT8B9PbrmTnn+hNp/wA8uUcka37/AEL2+RbSX5dBO1ZsoRlHUWzilqcOPYej8U4ZI56y+BJt+/0JUiKlWjMJPqVJaWKPjlC3aIxUeW6MbRhLuYPuYvnZhZwzhmGtM4ZwmYUPTdGLaKa6mDZhIwZi+44tdTGzGRg+5i+491llstmTLL3Wy2X6V//EAD4QAAIBAwEGBAQCBwYHAAAAAAECAwAEERIFEyExQVEUMkJxECJSYSOBFSBAkaGx0SQwM2KywWBwcnOCkuH/2gAIAQEABj8C/wCSGWOBW6S4jaT6Q3H9naad9KitxbhhD0jH8zRhtdNxtNh883RKe62hcabN+W+5k/as/shkmbj6U6miT8kK/wDqgo7P2Txc8JLjqT9qG0Nr+Y8Y7c82P3oKo0QpyHpjFRJq1aVAz3/ZJJ5bnFioyzk+X7UuzNkRlLfl8vmkoXF5i42iw/Dh6JTXVzJot180p5AdhS7O2QhEGcMy+aShLfuN8VxFaR9PehbT2+vV6o/T7/sJLHAHWvlzHb/V1ejZmPXvBgRrWmNN9tGUcJWHBRT7T2rKYrPzF35yVHs/Z0JiteSRJ6vua9N1tZh+UdMcl2PnlbktNYbK+ablLddfyqMXgIf06uen71PemMyiIZ0g86iuLjY9zDaPj8bpVps9YS3iI94Jc1P4bYtxcLExVmQ0+1Egdt3II3hJwQaiN9su5s4JOUzcRSuh1KwyD/canPsO9by44J6Yf61ubcan6t0Wmkdst6pG60jXEI3EZ1IG5t/8o2Rj3SxHhH6EHems9nES3p4S3Pamnmcx2w4yTv1obM2OhS38pZfNJS3V+BNfHjHb/TRu7w/iTtqC9FXoKv8A/pH86t5DtrxGkK3gWxj2rYcpTdFrXydq2p+jryO2XftlXTOTV8unE63eJST5jSWiTJPcvGirGvE54VYxS/4ixKD+voQbyU8lFb6dtcvfovtWIvkg6yd/agqj2UczQluP/GPoKMVvz9UnRanWyk3dw3Ev1f8AOje7Rbw9knfm9JYWERjtRwWJev3NYXTc7VYc+kdfpDahJBOoI3NqAHACniugrQNwIflQdbCEMPtSXTQqZ0GFfsKk8NCsW8OptPU1LbeGj0ynevH3PekaOzhSbmveioYFhzFCOSeNJDyUtx/VMVvz9T9BRZjxPNjzNaphoh6R9/etzCuuXt0HvRllbVJ1Y9KwmY4Pq6tXREFZkzHB0Tq3vVultJxXgYvSB3r9H7KG/vX4POOPH7ULzaH4tweOk9Pi/wD3I/8AWKZpZyIDMY1KANH7dwatXkvW3t0x0xxRjOB2q1twZDIzSBnj06jpP7qjuJIt9cLZsNCEfNiTFbIkmiNqzJMuhz7VtVtQ0hYwTnrxrak8awX8Go71Jflkjx2NQNGeBQHSx+YD4FmOAOtfLmO3+rq1LFGuX9KLW9nOqToOi1u7bgPVL/Sv9+rGg8/yx9Iv60BzY+VBzNb244t0Totbu24L6peg9q3Ua72ZunU/c09zu18RIck9vb9Q+NKCDIJ3hwKe8j8NI44s6uDj71HA9urRR8UHatz4SPd6teB3qMQLGkgj0oF+jNCO5iWVQcjPSjbLboISdRXuaV54IzM3f1f1pnRUW4ZADjnp6fBoiVZgMlPh01/xrd6hrxnT1xSglYwTpUcsmkNzNFD9O8YCtcMiSp9SHIrVjj3+GAMCi2OJ60ELDWeS5/UjChSd/FjX5fMOdB5o7VWaBlTwo/1Cpr3xj4iud2IdI06atj4mYxXMrR6sKqYwfL1qzMUutjanDyAHd5dRn2Gaa1iv2n1ojiV1UmM6wP3HNTWfjZZNRj0NoUycc5A6dKt45mZmhmkUGQjVjT1xwqZreTdTbiJQ+M4zJinsBeMyyPCBcSAao9Wc/wAv41IguzODJbxs7AZ0nVwNXUEE50JKBoiKiTGn05qO7F5I0sdtLzULxHcUry3eueW3UiTdDIJbkKgtp2kYQ3sBXf6dYyrfTWy93BFcNu5fklOB6fsauolj8LPPOqulrg6V09M9TW53suI2bOgx78jpw5U+6nmxDCGDxIoDN3bVTXSTSfhyRqVQLuRnGQc8Tz6UNV+Y0nu5LcHSPkVS38TjFW9uNpFzGZBvlUawMDh2zWZn3jpIya8c8H4mKeMSR/SafRaoNYwaaPcru2bWV+9NKsEepGzn6T/tRjt/DsWBGkHOQeYpkS2UKxBPXlypt9Crk44+1LIkMcLZwG+9a3jDNwGT9jkVJvYVfeABs9ccqeMWqaXxq7nH3rR4VAudXDnn3qNfDJiMELRRokcBd3jsO1YzbpMjdTxyKSYoDIgIVu2ak3sCvrxq++OVLF4ZdCnI7/vqGOSCPIXCLy4U8k1tGc+bPKpLbdI0YbLJ2bnSbmFU0Zx+fOisahATnA7/ABXRI0ckkiougcTntSWfinj/ALToJyC+nTnFLYPeOiCSQb71NjkK2lmXfney/ifVVsyiMXmiPclMa9fDFNKHkRvEmHTkaANWnHvWEf8AGtEIuOHqzgf1pYpGkkUOkgEpBbP5VZ3fjTK9wxVoOg4Hl7VYXYvzcSXIIePhjyE5Htitlo+0JT4u2MsnLmADw/fSpvJRu4i2qMgajqIyf3Ve3ZvGjMCqVRPLyrabmVmJdflJ/wAoraLKls0fjHzvFy1Q7R8WTLJPoNp0A1Y0+4rZz+I/tEhfV3OM1a3Bu2nae3LMHHAHHOraY7RMx8NI4LcdJ+XiKvrWWeYKIY5fnYavNimshcmFJLjBmHmOIkOM/eksvHNu0eRd6nNwAKO+feOkjJq74Px3c8YkTsaDxW6I46gUVkgVgW1fnRiiiWOM+kCleO2iR/ScV4ncJv8AOdeOtTYjQ73/ABOHm96+SCNBnNSSJAiSuCNYHekQRI0oj0FscT3qMiNQY10p/lFKrW8baOQ7U6btFWTgw7086xqkjDDNTGNQus6jjqa8QLdBNz1YoyC2j1njnFIN0uEGlRjkKbTax/MMHh0pgLWPDKVPDmK3RgQpnOPvyqPdwqmjy4HKtMahBnPD9YIg3kzckFb6dtcv8F9qxCdEHWX6vb+tAch0UczQkuOA9MXb3rcwDVJ1PRPeixOuRvM560YrbpwaXoPb70I0Bkmbp1b7mvEXTZfoByHtWqYaIukXf3/v84496weXwBxxHw4DHw4DFZxx70MjOP8AjH//xAArEAEAAgICAQIFBAMBAQAAAAABABEhMUFRYXHREIGRofAgQLHBMOHxYHD/2gAIAQEAAT8h/wDiDMJcrDC/oz9EEf2wpvr16ISurNoDtmA8FHyT2loObs134QCDY/tDKdTbGqt5X/uZxUpl9aEavJF9yLCQwY7j5iKW+gRv9mwDGmJXZmfDZnJ7Q7LoLfkfebLcxZmm6gWXxCGekDi0yCXB6f0g3+wLIa1aJZp/LvS6PMpHOT/Xx6w3cp+R6UIjKV4jx+EMqWqpH2SJQ+ovz+8u7C9X/OI0InYT1Aj4uW3wgqQFUcql4W0aNXTBUdSABV6gkH10ElBOEF/MCnfqbdMBqITSOv8ABjQ4DKug5hQa27Mevd8a9YyEO77/AJ8S7C53fx1MOlQzeevDmOdrhxw284/1BNLbLv0e0bwq581XtjL6qPLArfSbPJ94znrfhB9/nPwHWAnrwZPTnEyKyp46iocCweB4jTEbbMpmLhl2omXioKCDLw1+sh/7UnomE1G2jr3S0b858ffKbN4z1lHOGx+q9sprRhPwWLtFb+cdJdImsW6JgNstU/hjymraBD6CwF9HiEGAoCUQ5WpZx94/sbHKYJNvnoIWAf5QRZfms3GZEewcOQZV8GlyTRMEhfKHx1M+Iwv4rL7vdFhRQev5e2VIqMHT30le9fSHR0Rujk6+j0S4XEUehPYeJQv3r1Xqo309lvCAyhVzj7e2AKMHxgvXKTTh1sx805CbuWL7WCiFNlQGdu6j91O63W6GBjjGW9cmM1CPNu4HB6ywasxcMn8UQ0B7lDF/A8BrVxGifL09PolpG8p8/wC4ONxH2veOEpapweOzBJWrcrP9xhYJZ/u9koZrQg5wMl+S+YoShrb4OzLFsttfkOoJrgAxfjp+g5DoHaNmXzUsXavC1amh8x3XexxvQeCquadS5TmC9jR1bO/GSrseINsdLRyvMwJ8NGvZHSKARjDr4DxBaFB1Z8oAKMSq24+iIutbPzKgzRITwDzEE5W173Vws9cP6xFQhXHaIBHUGiDQQAHmplg+YqmTW6P0LAtTc/aTVlxBcLcZKMeYttVPfuCOL53cP1vIzArzK2zyXFPHAcio7qcIj9AIKiuIrHo2T0R6jqKy2hxGuVLjlQmRWHwxDuEYa9AZxLMR2O4GdwrfONx0fm6mmlzlnmoiR1Rvuoj8lVpdYfS+dzMD1lm96cfeDH32tX/RKSI5Kwi6nBacTRV0MSZKyrmonWCocWitYqjzMMkNNouycs+EpmX2fRSmd048TZw4rS+PmVqPbeKAmgWufi+ZIumzJANrNLU6tilTAGHvL59mXXlr2RpF3zBoeGtQAUC2lV5PUUWZSsemTq4+NcAqx9YxXxA4+wOZxX99cvouAod7arF2s7mXcDsPJldxFUQGKHfrfmFP0uhk8JWQdeUs1bylu4vow7G38EXSWY79hHleqVAu9rzPNXyDxRs8MqS2liuLrV+dzXr65N/Dm/nMqXJNnk5uITI+xt+N+QlYy1bA1zMZPYFbRPM0FVAKuTXMaowFPqzLzHgDLgrO5Z6LM7jBvDMyIsw23XykWfOph+hgFxeVFmGzAiF8Jg0ji4lCMjAIW8YHXUyZkHBTUr1G1Zyb7GKb/OEWkEfrvOF0yttfS4qjdGb8TRAixgcfFEDs5pQCCuriuGQDWlBw3qGHe37ZtaHDUzaLXYY8iXPiAi2pFxGexauMSXHMigX4uWdGvnuZHsmZLKXNn1y5MF0hvcIw9GR6RW/1ieXr5irvugyqoZYVbXJqc8wAHJJZSk8GqVeZfpFB0lH0IaYvg5Nv1mrI0aMaCGCSEqw1cGLlfmbYiZXtX36wXJVdjuczPoEKQmLKzurZ6QYzsM7H6EcvIsOAB9aAh+FU7DcSJKYOXb+pSv8AsR6PMWqU74+oXLOM34eP/HcB5mrMXx2w6qWwceXZj0XP/kfEt58o+w8RBAFbL8Pb+H2jkTEvbdn9zR5/1kcsIK38nl7YABgP8wbqvumYLBawjANBRFQHQ1r4X1Fm2jfwqBDonGuOGY8gWRZr/wBj/9oADAMBAAIAAwAAABDzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzn7zzzzzzzzzzQjpfzzzzzzzzxDdHH9wThXzzKtFx14N/bFMKovbNa4byLcpknY7YX7N3z4EmEgbZcJcZTywrf5B1zdyZxzzzwwwx0zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz/8QAJREBAAICAgEDBQEBAAAAAAAAAQARITFBUXEQYbEwUJGh8NHh/9oACAEDAQE/EPsYK0RqmH3+nfANBGwjnOjt945g7chOP+YRA19HcsBSKeaHb5lgl3L+B3TGVgtOh/PiC0yVMB59vyzE6yrNMoT4irRBS2lEaC+qKiA+R/yYrr9mACFuNheMpby2jx79GiPFuZd3zT3ApQuDom+EWZgBBCxFS5vOCYOn7MeLPBFdM/CBTlnl6hknL0HyAjLwDgOg9AHJHewUUkylIEUrUpTc8JZEQmsy4g2X6VhIMCpQckTbqPMSozAzQQIyR6fSHRFZfpRblqgljjRzBstRA5JkU76lWbx/aiDKT2JT6Fv2L//EACURAQACAgEDAwUBAAAAAAAAAAEAESExQRBhcTBQoSBRkbHB0f/aAAgBAgEBPxD2QR16YC9Iota+bBS74H9hr0iqYgrv4iKrVjn+CKcqP5ZVQcTla5ixHBt7ytrO2vEIgdVqeehfs7xGgY4jQb+EUBGaUCYwihUCtLEpqL9HmcKLt/yC10MFOWGQNI2CQUsrAb3FWU7LnlMBBfDC2N1LBaulgGiJGDIHtmDYuGGntB9QA3kRSoYVbgtMJYgU10EFDFVufeZxDOAYM0y0FJZzO9FPPtX/xAArEAEBAAIDAAIABQMEAwAAAAABEQAhMUFRYXEQgZGhsUDw8SAwweFgcNH/2gAIAQEAAT8Q/wDSBpKqYDFCqiMfo3rOER+v6YLOaF+EHa4wLSrV438Oj5xcrjBob8J4294h6selVOEvHHmGiFROz+kbaYib0wP+ceOorT+HHBM+vQlDluqaOsdMn1jAO1u4/nkP2OkjpOGMJG6nhAfqn9GgN4DYEQPY6r6cfeCmnejhKvIu157yeyFqOPH7fR7jOlun7aTrR313g161t/YuY+9/WDJ1C1EXMvFXXmWAFXp6B1HFwiI0/oGCgVgHKuboDnY371/M9Q3lg8gR/wDEO1fvjm0UN+ROlPDby+YqxNf+4R8CbeB3gkrQGeGg5jo5a58ARNJP2/n4GIHcNf8AB44GcdBYcGr29U0dbxHDdKjXWxjI7gXAJsGsOi6OcSG86zJxR+8tU3k8Be6mOToFy2w1oswRyjzgI7CRG94hKiHAXgKRuqzrGcWPRqh8R/2ObkhKpwDafDIC+nIjRzXccHy2TOccOe134G/oyJq0ix1ejwaMWFBLl4fR+bSw1lLYVeAC0nYe+Bk83jejro8DR3XNx0qy5C5HvBjsPQLdMTce3l+DJzAsT1852uOq4wmhIwQ6oh8lp3n5LB4LR2BE239vMMiKyQ8Q7nmayo6N0/AhjOcwwNPhEJ8OBwzXw4Hg/wAd5zIEDh0/Jx/qcWQHZ4+X9xy8Gp4O8Dwe8n61iouYRD7B6+f5XL5CgVf3VeV/PO/NRfP/AAJ1gcryL7T+D9cokJ5AGvoaE0dTGAJKsp2DuUS8vWKmE1LeHHaP57yS4oDeOD+64Oinrlj+jgQpAIAZ1N2IaFp4w2pHuE4Ysx9p2RxvCYlRJhLcrfOOInqdUCq86vGTnWkq0qDZTc1TBbWiU3hTksclATb5xs3eISjR3T8VBV1ktGSr7h/BjtkX4bnq+BidAtfpQ/t3hMLBp9JOnxy9Ze5N1+wP+TIod8F5/M7xGsmfb/Kv6ubzTVUfvj/JlHrFwnoNLpeTjNFITqtMuz40You6yxur/wBGAzA0B+De3MhBt1uNU+iol+MWY486hMEAq44MCo0YmdZobs+MMKlKkARMCpYNMn3xjAxRSEhbBw1IsCbe8GxrnZhDMj+NWgAXQ3w4XLZaHBt65efwdgBWAO1c+2SIfO/y8vWRR+fqh4er98NO98Z8Pvq3gfK0r36fm4Pnpq3eLH7t5iZw2+fFOX9B85U3SOr4HR88GbXitf7Tl+WD8SafIHj5uD54yddu6Tyvj5P0DnJ/Bq2QeF77wJx+J1YDIqqBYj5mMw+aNOSQarfzmtdZQTVWbLW73cUbTpTEUNScyXHk/DJACdzKnbgFVCNPgW18jgs3om4R20IbXrOTL77WAmh6MwdPIwatOgaGpzlxtnCZTXIDUXmOGAAaAzZQa6yh+8zsjGNVPSXVwt80xBQ3lAwN6cW+paQTbLB3PcYCUEx8omLxlCCDy4ZAoiPeEH6DgH1gmpAQ0cVw5imA+TkQ7mDfxAp0NdCAb+WbXSv38anoILGViBaOd7sgEnePzrLqjcazzjumzArW4q3QoptjCusovkYce8AKFxmDkc6UEuzsDKecK1J7IykQrswkCey3HA7NOd8CIM0WjUrtDIKmjKuSTpAKD80d6FijpsQDWcYgW0MpoOfjZFKQ1h1y7liMulA5V0yEeUUIDibQcmj1l5iTSpXYH+WRZRi0fHkoEiDjC0F8cqRJukrrjHMUocVMBaRCK45Mc6mwt3cgWOHJelLjAYiAoBNnawwVcRHXBbPIaHK6mwVAANJYB8fjRh9GwJpGiDhYxRl+7CzRocqmiuSG/mg/ljV13CLoLENWC94C73YQCRKBRrXGTvewKqixghYdGDFMO2SygilETnA+VBQ0bXaNV25VXORYD9l85spN6qkHykibFy/6VLQKGkVKp7i4GBVNISGpRbXvAoxMdrNHSm7XELhPariNhidnORQdSrhMqrcl3hCsE4yR8dn1muEfolVREaYkS4foDc2WA3tVveWJsOpothNRaG8acFR0gqwwAR9sjab2XEkas2I8s5MRGrcilVBVVZgR+9gpfsX8QY8bGN5gDFo5wgjrrDYUoOZrGtkDPHWbFLqoZFXSQIjhq+zCBJAH52LyPLcIbggIhfWl5VNTBsU2nd60Wv0YcEnbPC+PV/LE8ywbNCKOy/Ny9ffFUmK6C+t5xCUawgKatjzZityvixeqFjsuGY05pFU+h84MfSi1EJTmHwGDzPTcJITji5u0qiwvBAr0tTGWGotk76Vb6xIkohyYoUU7mSw4DtJGwAtU5wSAkbe7OlscINjlCdPEBGJZVuIMB9lMsWkqoeZHmdw4gas5/FFgGoA0HiPZjkcB4WJb7F384/2Bb1Eb5qGPLtHK5E+e8ZO8BpHvwy8YXThQaCHnTXbECkGiX5hDW8qMFh+bXy6y63Y1AnQFu5zk75ACfhGu5zjHhGagnkIE+DHPbp+cGukrHnA8ERMNA7gSZfnBIeBfBhyVsA57OV9xW4WTtI+a95zlhhnts8tbObgWyggxAeJqZvd1wdHl7Q18ZarNWpFTtF0fBiuTftZ8xc5gYSWfkJ63579yFu4wtfsX/US1KuM9+v1+VdY/tB69gHg9Xb3lqMml7/2j64cTNeo9DlH/AOuQJFeT4T/rOvcDf9bBeo58Hb3DeEbLuVeeB0NGNgNQLvqL9O28NmFL6VHB6tHHhicf0uVeOevFlfjBLVK/oU5+uju4CYCAcB/vCwxABQcC4WAqBRHkTBJgIAQMpXi4X1HrJiDe4grtfnHeFiHgYGSRNFQo8vmIDioKvTzAD/zD/9k=';
+
+function switchTab(t){
+  ['tasks','budget','report'].forEach(s=>{
+    document.getElementById('screen-'+s).classList.toggle('active', s===t);
+    document.getElementById('ttab-'+s).classList.toggle('active', s===t);
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function openAddTask(){
+  switchTab('tasks');
+  const f=document.getElementById('add-task-form');
+  f.classList.add('open');
+  setTimeout(()=>f.scrollIntoView({behavior:'smooth',block:'start'}),80);
+}
+function closeAddTask(){document.getElementById('add-task-form').classList.remove('open')}
+function openLogin(){document.getElementById('login-modal').classList.add('open')}
+function closeLogin(){
+  const email=document.getElementById('login-email').value.trim();
+  if(email){
+    const name=email.split('@')[0];
+    document.querySelector('.user-name').textContent=name.charAt(0).toUpperCase()+name.slice(1);
+    document.querySelector('.user-avatar').textContent=name.slice(0,2).toUpperCase();
+  }
+  document.getElementById('login-modal').classList.remove('open');
+}
+</script>
+</body>
+</html>
